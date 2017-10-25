@@ -2,8 +2,8 @@
 
 
 //these are global, so can be called from anywhere
-var form = document.getElementById('sample-form');
-var table = document.getElementById('student-table');
+var form = document.getElementById('sample_form');
+var table = document.getElementById('student_table');
 var data = [];
 
 function Student(first, last, status, plans) {
@@ -14,7 +14,7 @@ function Student(first, last, status, plans) {
 }
 
 //this thing is meant to capture form data. THATS IT
-function formData(event)  {
+function formData(event) {
   event.preventDefault();
   //preventDefault METHOD meant to prevent the DEFAULT ACTION of a certain thing
   //as in a link on google.com default to bring you to another page
@@ -23,7 +23,7 @@ function formData(event)  {
   var first = event.target.first.value;
   //event is referencing event I'm doing (submit event in this context)
   //first says 'on submit (event) find this TARGET (wherever the even is being fired from, in this case the form) that has name equal to FIRST (points to the name field in the input box back in the HTML file) and assign it this VALUE
-  var last = even.target.first.value;
+  var last = event.target.first.value;
   var enrolled = event.target.enrolled.checked;
   var futureClasses = event.target.future_classes.value;
 
@@ -32,6 +32,33 @@ function formData(event)  {
   //every time click submit, says dont reload page, push everything to my data array,and build that as a table row
   data.push(new Student(first, last, enrolled, futureClasses));
   //create our table here, by creating a function that will create our table data for us AND THEN WE CALL IT HERE OK?
+  //heres the function mentioned above
+  createTable();
   form.reset();
   //CLEARS EACH FORM FIELD AND RESET TO NOTHING AFTER EVERY CALL OF formData(event) which is the submittal of a new student object
 }
+
+//another function that is a wrapper for handling our table
+//this is our createTable function that will be called by the above function
+//createTable() will go through and create a new row from all the data in the data array and add table data for each student being created
+function createTable() {
+  var row;
+  //declaring variable row that currently has undefined value
+  //following is for loop, that loops through all data we've pushed to the data array thus far, and re-rendering the table
+  for (var i = 0; i < data.length; i++) {
+    //on 1st iteration, reassigns row to create an element <tr>
+    //on 2nd, reassigns and creates another <tr>
+    row = document.createElement('tr');
+    //this is only useful if you're looking to re-render the table
+    //if NOT TRYING TO RE-RENDER, this following line would be outside of the for loop
+    row.innerHTML = '<td>' + data[i].first + '</td>' +
+      '<td>' + data[i].last + '</td>' +
+      '<td>' + data[i].enrolled + '</td>' +
+      '<td>' + data[i].future_classes + '</td>';
+  }
+  //appendChild is used to add each row of the for loop
+  table.appendChild(row);
+}
+
+//don't invoke your function in the event listener, as in formData(), just leave it as formData
+form.addEventListener('submit', formData);
